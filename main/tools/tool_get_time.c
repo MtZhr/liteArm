@@ -36,18 +36,21 @@ esp_err_t tool_get_time_init(void)
     
     /* 配置 SNTP */
     ESP_LOGI(TAG, "Initializing SNTP...");
+    
+    /* 设置操作模式 */
     esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    
+    /* 设置 NTP 服务器 */
     esp_sntp_setservername(0, "ntp.aliyun.com");
     esp_sntp_setservername(1, "ntp.tencent.com");
     
-#ifdef CONFIG_SNTP_SYNC_MODE_SMOOTH
-    esp_sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
-#else
-    esp_sntp_set_sync_mode(SNTP_SYNC_MODE_IMMED);
-#endif
+    /* 设置同步模式 */
+    sntp_set_sync_mode(SNTP_SYNC_MODE_IMMED);
     
-    esp_sntp_set_time_sync_notification_cb(time_sync_cb);
+    /* 设置同步回调 */
+    sntp_set_time_sync_notification_cb(time_sync_cb);
     
+    /* 初始化 SNTP */
     esp_err_t ret = esp_sntp_init();
     if (ret == ESP_OK) {
         ESP_LOGI(TAG, "SNTP initialized successfully");
