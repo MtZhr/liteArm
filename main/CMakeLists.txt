@@ -15,6 +15,12 @@ idf_component_register(
         "heartbeat/heartbeat.c"
     INCLUDE_DIRS
         "."
+        "bus"
+        "wifi"
+        "channels/feishu"
+        "agent"
+        "tools"
+        "heartbeat"
     REQUIRES
         nvs_flash esp_wifi esp_netif esp_http_client esp_http_server
         esp_event json spiffs console vfs esp-tls esp_timer esp_websocket_client
