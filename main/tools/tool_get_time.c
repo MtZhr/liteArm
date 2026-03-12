@@ -10,7 +10,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include "esp_log.h"
-#include "esp_sntp.h"
+#include "lwip/apps/sntp.h"
 
 static const char *TAG = "time";
 
@@ -34,14 +34,16 @@ void tool_get_time_init(void)
     setenv("TZ", "CST-8", 1);
     tzset();
     
-    /* 配置 SNTP */
-    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    esp_sntp_setservername(0, "ntp.aliyun.com");
-    esp_sntp_setservername(1, "ntp.tencent.com");
-    esp_sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
-    esp_sntp_set_time_sync_notification_cb(time_sync_cb);
+    /* 设置 SNTP 服务器 */
+    sntp_setservername(0, "ntp.aliyun.com");
+    sntp_setservername(1, "ntp.tencent.com");
     
-    esp_sntp_init();
+    /* 设置同步模式 */
+    sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
+    sntp_set_time_sync_notification_cb(time_sync_cb);
+    
+    /* 初始化 SNTP */
+    sntp_init();
     ESP_LOGI(TAG, "SNTP initialized");
 }
 
