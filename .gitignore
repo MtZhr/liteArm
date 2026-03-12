@@ -1,0 +1,16 @@
+# Prerequisites
+.build/
+sdkconfig
+sdkconfig.old
+
+# Build output
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+main/mimi_secrets.h
