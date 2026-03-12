@@ -56,7 +56,7 @@
  * Feishu Bot Configuration
  * ============================================================================ */
 #define LITEARM_FEISHU_MAX_MSG_LEN      4096
-#define LITEARM_FEISHU_POLL_STACK       (8 * 1024)
+#define LITEARM_FEISHU_POLL_STACK       (16 * 1024)
 #define LITEARM_FEISHU_POLL_PRIO        5
 #define LITEARM_FEISHU_POLL_CORE        0
 #define LITEARM_FEISHU_WEBHOOK_PORT     18790
@@ -80,7 +80,7 @@
  * Message Bus Configuration
  * ============================================================================ */
 #define LITEARM_BUS_QUEUE_LEN            8
-#define LITEARM_OUTBOUND_STACK           (6 * 1024)
+#define LITEARM_OUTBOUND_STACK           (8 * 1024)
 #define LITEARM_OUTBOUND_PRIO            5
 #define LITEARM_OUTBOUND_CORE            0
 
