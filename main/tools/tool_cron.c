@@ -109,7 +109,7 @@ static void cron_scheduler_task(void *arg)
                 msg.content = strdup(job->message);
                 
                 if (msg.content) {
-                    message_bus_push_inbound_from_cron(&msg);
+                    message_bus_push_inbound(&msg);
                 }
                 
                 job->fire_count++;

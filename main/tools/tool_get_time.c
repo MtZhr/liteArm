@@ -50,18 +50,11 @@ esp_err_t tool_get_time_init(void)
     /* 设置同步回调 */
     sntp_set_time_sync_notification_cb(time_sync_cb);
     
-    /* 初始化 SNTP */
-    esp_err_t ret = esp_sntp_init();
-    if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "SNTP initialized successfully");
-    } else if (ret == ESP_ERR_INVALID_STATE) {
-        ESP_LOGW(TAG, "SNTP already initialized");
-        ret = ESP_OK;
-    } else {
-        ESP_LOGE(TAG, "SNTP init failed: %s", esp_err_to_name(ret));
-    }
+    /* 初始化 SNTP - esp_sntp_init() 在 ESP-IDF 5.x 中返回 void */
+    esp_sntp_init();
+    ESP_LOGI(TAG, "SNTP initialized successfully");
     
-    return ret;
+    return ESP_OK;
 }
 
 /**
