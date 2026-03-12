@@ -5,6 +5,7 @@
 
 #include "tool_registry.h"
 #include "litearm_config.h"
+#include "message_bus.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -54,7 +55,6 @@ static TaskHandle_t s_cron_task = NULL;
 static bool s_cron_running = false;
 
 /* 外部引用 - 消息总线推送 */
-extern esp_err_t message_bus_push_inbound_from_cron(litearm_msg_t *msg);
 
 /**
  * @brief 生成任务 ID

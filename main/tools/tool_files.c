@@ -328,7 +328,7 @@ esp_err_t tool_list_dir_execute(const char *params_json, char *output, size_t ou
     
     while ((entry = readdir(dir)) != NULL && len < (int)output_size - 64) {
         /* 构建完整路径 */
-        char full_path[256];
+        char full_path[512];
         snprintf(full_path, sizeof(full_path), "%s/%s", prefix, entry->d_name);
         
         /* 获取文件信息 */

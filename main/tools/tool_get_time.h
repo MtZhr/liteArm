@@ -9,5 +9,6 @@
 
 /**
  * @brief 初始化时间工具
+ * @return ESP_OK 成功, 其他值失败
  */
-void tool_get_time_init(void);
+esp_err_t tool_get_time_init(void);

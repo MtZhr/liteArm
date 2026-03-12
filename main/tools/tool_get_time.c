@@ -10,7 +10,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include "esp_log.h"
-#include "lwip/apps/sntp.h"
+#include "esp_sntp.h"
 
 static const char *TAG = "time";
 
@@ -28,23 +28,37 @@ static void time_sync_cb(struct timeval *tv)
 /**
  * @brief 初始化 SNTP
  */
-void tool_get_time_init(void)
+esp_err_t tool_get_time_init(void)
 {
     /* 设置时区 */
     setenv("TZ", "CST-8", 1);
     tzset();
     
-    /* 设置 SNTP 服务器 */
-    sntp_setservername(0, "ntp.aliyun.com");
-    sntp_setservername(1, "ntp.tencent.com");
+    /* 配置 SNTP */
+    ESP_LOGI(TAG, "Initializing SNTP...");
+    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    esp_sntp_setservername(0, "ntp.aliyun.com");
+    esp_sntp_setservername(1, "ntp.tencent.com");
     
-    /* 设置同步模式 */
-    sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
-    sntp_set_time_sync_notification_cb(time_sync_cb);
+#ifdef CONFIG_SNTP_SYNC_MODE_SMOOTH
+    esp_sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
+#else
+    esp_sntp_set_sync_mode(SNTP_SYNC_MODE_IMMED);
+#endif
     
-    /* 初始化 SNTP */
-    sntp_init();
-    ESP_LOGI(TAG, "SNTP initialized");
+    esp_sntp_set_time_sync_notification_cb(time_sync_cb);
+    
+    esp_err_t ret = esp_sntp_init();
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "SNTP initialized successfully");
+    } else if (ret == ESP_ERR_INVALID_STATE) {
+        ESP_LOGW(TAG, "SNTP already initialized");
+        ret = ESP_OK;
+    } else {
+        ESP_LOGE(TAG, "SNTP init failed: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
 }
 
 /**

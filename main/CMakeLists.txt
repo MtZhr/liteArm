@@ -24,5 +24,5 @@ idf_component_register(
     REQUIRES
         nvs_flash esp_wifi esp_netif esp_http_client esp_http_server
         esp_event json spiffs console vfs esp-tls esp_timer esp_websocket_client
-        lwip driver
+        lwip driver esp_sntp
 )
