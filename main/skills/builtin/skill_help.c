@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file skill_help.c
  * @brief 帮助技能实现
@@ -14,7 +15,7 @@ static esp_err_t skill_help_execute(const cJSON *params, skill_result_t *result)
     const skill_def_t *skills = skill_list(&count);
     
     int len = snprintf(result->message, sizeof(result->message), 
-                      "可用技能 (%d):\n", count);
+                      TXT_HELP_HEADER, count);
     
     for (int i = 0; i < count && len < (int)sizeof(result->message) - 100; i++) {
         len += snprintf(result->message + len, sizeof(result->message) - len,

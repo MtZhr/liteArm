@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file skill_file_ops.c
  * @brief 文件操作技能实现
@@ -16,7 +17,7 @@ static esp_err_t skill_read_file(const cJSON *params, skill_result_t *result) {
     cJSON *path_json = cJSON_GetObjectItem(params, "path");
     if (!path_json || !path_json->valuestring) {
         result->success = false;
-        snprintf(result->message, sizeof(result->message), "缺少path参数");
+        snprintf(result->message, sizeof(result->message), TXT_ERR_PARAMS_MISSING);
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -24,7 +25,7 @@ static esp_err_t skill_read_file(const cJSON *params, skill_result_t *result) {
     FILE *f = fopen(path, "r");
     if (!f) {
         result->success = false;
-        snprintf(result->message, sizeof(result->message), "无法打开文件: %s", path);
+        snprintf(result->message, sizeof(result->message), TXT_ERR_FILE_OPEN, path);
         return ESP_ERR_NOT_FOUND;
     }
 
@@ -34,7 +35,7 @@ static esp_err_t skill_read_file(const cJSON *params, skill_result_t *result) {
     fclose(f);
 
     result->success = true;
-    snprintf(result->message, sizeof(result->message), "文件读取成功 (%d 字节)", (int)len);
+    snprintf(result->message, sizeof(result->message), TXT_MSG_FILE_READ_OK, (int)len);
 
     ESP_LOGI(TAG, "Read file: %s (%d bytes)", path, (int)len);
     return ESP_OK;
@@ -46,7 +47,7 @@ static esp_err_t skill_write_file(const cJSON *params, skill_result_t *result) {
 
     if (!path_json || !content_json) {
         result->success = false;
-        snprintf(result->message, sizeof(result->message), "缺少必要参数");
+        snprintf(result->message, sizeof(result->message), TXT_ERR_PARAMS_MISSING);
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -56,7 +57,7 @@ static esp_err_t skill_write_file(const cJSON *params, skill_result_t *result) {
     FILE *f = fopen(path, "w");
     if (!f) {
         result->success = false;
-        snprintf(result->message, sizeof(result->message), "无法创建文件: %s", path);
+        snprintf(result->message, sizeof(result->message), TXT_ERR_FILE_CREATE, path);
         return ESP_ERR_NOT_FOUND;
     }
 
@@ -64,7 +65,7 @@ static esp_err_t skill_write_file(const cJSON *params, skill_result_t *result) {
     fclose(f);
 
     result->success = true;
-    snprintf(result->message, sizeof(result->message), "写入成功: %d 字节", (int)len);
+    snprintf(result->message, sizeof(result->message), TXT_MSG_FILE_WRITE_OK, (int)len);
 
     ESP_LOGI(TAG, "Write file: %s (%d bytes)", path, (int)len);
     return ESP_OK;
@@ -81,7 +82,7 @@ static esp_err_t skill_file_ops_execute(const cJSON *params, skill_result_t *res
     }
 
     result->success = false;
-    snprintf(result->message, sizeof(result->message), "未知操作: %s", action);
+    snprintf(result->message, sizeof(result->message), TXT_ERR_ACTION_UNKNOWN, action);
     return ESP_ERR_INVALID_ARG;
 }
 

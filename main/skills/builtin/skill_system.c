@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file skill_system.c
  * @brief 系统信息技能实现
@@ -23,7 +24,7 @@ static esp_err_t skill_system_execute(const cJSON *params, skill_result_t *resul
     
     result->success = true;
     snprintf(result->message, sizeof(result->message),
-        "系统状态:\n版本: v%s\n内存: %d/%d bytes\n项目: https://github.com/MtZhr/liteArm",
+        TXT_MSG_SYSTEM_STATUS,
         LITEARM_VERSION_STRING,
         free_heap,
         min_free_heap);

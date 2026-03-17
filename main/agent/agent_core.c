@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file agent_core.c
  * @brief Agent Core Implementation
@@ -120,7 +121,7 @@ esp_err_t agent_process_message(litearm_msg_t *msg)
     } else {
         /* 不是工具调用，返回帮助信息 */
         response = strdup(
-            "欢迎使用 liteArm!\n\n"
+            TXT_MSG_WELCOME
             "发送 !help 查看可用命令\n"
             "格式: !工具名[参数]\n\n"
             "示例:\n"

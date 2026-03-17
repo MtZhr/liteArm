@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file skill_cron.c
  * @brief 定时任务技能实现
@@ -19,12 +20,12 @@ static esp_err_t skill_cron_execute(const cJSON *params, skill_result_t *result)
     
     if (strcmp(action, "list") == 0) {
         result->success = true;
-        snprintf(result->message, sizeof(result->message), "定时任务列表功能（待实现）");
+        snprintf(result->message, sizeof(result->message), TXT_MSG_CRON_LIST);
         return ESP_OK;
     }
     
     result->success = false;
-    snprintf(result->message, sizeof(result->message), "未知操作: %s", action);
+    snprintf(result->message, sizeof(result->message), TXT_ERR_ACTION_UNKNOWN, action);
     return ESP_ERR_INVALID_ARG;
 }
 

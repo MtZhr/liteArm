@@ -1,3 +1,4 @@
+#include "litearm_text.h"
 /**
  * @file skill_get_time.c
  * @brief 时间技能实现
@@ -31,7 +32,7 @@ static esp_err_t skill_get_time_execute(const cJSON *params, skill_result_t *res
     if (timeinfo.tm_year + 1900 < 2020) {
         result->success = false;
         snprintf(result->message, sizeof(result->message), 
-                "时间未同步，请检查网络连接");
+                TXT_ERR_TIME_NOT_SYNC);
         ESP_LOGW(TAG, "Time not synchronized");
         return ESP_OK;
     }
@@ -41,7 +42,7 @@ static esp_err_t skill_get_time_execute(const cJSON *params, skill_result_t *res
     
     // 设置结果
     result->success = true;
-    snprintf(result->message, sizeof(result->message), "当前时间: %s", strftime_buf);
+    snprintf(result->message, sizeof(result->message), TXT_MSG_TIME_FORMAT, strftime_buf);
     
     // 添加结构化数据
     result->data = cJSON_CreateObject();
