@@ -31,8 +31,8 @@
 #include "wifi/wifi_manager.h"
 #include "wifi/wifi_config.h"
 #include "skills/skill_registry.h"
-#include "tools/tool_get_time.h"
-#include "tools/tool_cron.h"
+#include "skills/builtin/skill_get_time.h"
+#include "skills/builtin/skill_cron.h"
 #include "agent/agent_core.h"
 #include "channels/feishu/feishu_bot.h"
 #include "heartbeat/heartbeat.h"
@@ -320,9 +320,12 @@ void app_main(void)
     ESP_ERROR_CHECK(message_bus_init());
     ESP_ERROR_CHECK(wifi_manager_init());
     ESP_ERROR_CHECK(wifi_config_init());
-    ESP_ERROR_CHECK(tool_registry_init());
-    ESP_ERROR_CHECK(tool_get_time_init());
-    ESP_ERROR_CHECK(tool_cron_init());
+    ESP_ERROR_CHECK(skill_registry_init());
+    ESP_ERROR_CHECK(skill_get_time_register());
+    ESP_ERROR_CHECK(skill_file_ops_register());
+    ESP_ERROR_CHECK(skill_cron_register());
+    ESP_ERROR_CHECK(skill_system_register());
+    ESP_ERROR_CHECK(skill_help_register());
     ESP_ERROR_CHECK(agent_core_init());
     ESP_ERROR_CHECK(feishu_bot_init());
     ESP_ERROR_CHECK(heartbeat_init());
