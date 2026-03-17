@@ -7,7 +7,7 @@
  */
 
 #include "command_parser.h"
-#include "tool_registry.h"
+#include "skills/skill_registry.h"
 #include "litearm_config.h"
 
 #include <string.h>
@@ -189,7 +189,7 @@ static esp_err_t parse_tool_call(const char *input, tool_request_t *tool_req)
     tool_req->tool_name[name_len] = '\0';
     
     /* 检查工具是否存在 */
-    if (!tool_registry_exists(tool_req->tool_name)) {
+    if (!skill_find(tool_req->tool_name)) {
         ESP_LOGW(TAG, "Tool not found: %s", tool_req->tool_name);
         free(input_copy);
         return ESP_ERR_NOT_FOUND;

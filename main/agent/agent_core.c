@@ -14,7 +14,7 @@
 
 #include "agent_core.h"
 #include "command_parser.h"
-#include "tool_registry.h"
+#include "skills/skill_registry.h"
 #include "bus/message_bus.h"
 #include "channels/feishu/feishu_bot.h"
 
@@ -102,7 +102,7 @@ esp_err_t agent_process_message(litearm_msg_t *msg)
         if (!tool_output) {
             response = build_error_response("内存不足");
         } else {
-            esp_err_t exec_err = tool_registry_execute(
+            esp_err_t exec_err = skill_execute(
                 result.tool.tool_name,
                 result.tool.params_json ? result.tool.params_json : "{}",
                 tool_output,

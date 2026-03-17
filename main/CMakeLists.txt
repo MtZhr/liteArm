@@ -7,11 +7,12 @@ idf_component_register(
         "channels/feishu/feishu_bot.c"
         "agent/command_parser.c"
         "agent/agent_core.c"
-        "tools/tool_registry.c"
-        "tools/tool_get_time.c"
-        "tools/tool_files.c"
-        "tools/tool_cron.c"
-        "tools/tool_system.c"
+        "skills/skill_registry.c"
+        "skills/builtin/skill_get_time.c"
+        "skills/builtin/skill_file_ops.c"
+        "skills/builtin/skill_cron.c"
+        "skills/builtin/skill_system.c"
+        "skills/builtin/skill_help.c"
         "heartbeat/heartbeat.c"
     INCLUDE_DIRS
         "."
@@ -19,7 +20,8 @@ idf_component_register(
         "wifi"
         "channels/feishu"
         "agent"
-        "tools"
+        "skills"
+        "skills/builtin"
         "heartbeat"
     REQUIRES
         nvs_flash esp_wifi esp_netif esp_http_client esp_http_server
