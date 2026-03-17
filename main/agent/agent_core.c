@@ -97,25 +97,25 @@ esp_err_t agent_process_message(litearm_msg_t *msg)
     char *response = NULL;
     
     if (result.is_tool_call && result.tool.is_valid) {
-        /* 执行工具 */
-        char *tool_output = malloc(TOOL_OUTPUT_SIZE);
-        if (!tool_output) {
-            response = build_error_response("内存不足");
+        /* 执行技能 */
+        const skill_def_t *skill = skill_find(result.tool.tool_name);
+        if (!skill) {
+            response = build_error_response("未找到技能");
         } else {
-            esp_err_t exec_err = skill_execute(
-                result.tool.tool_name,
-                result.tool.params_json ? result.tool.params_json : "{}",
-                tool_output,
-                TOOL_OUTPUT_SIZE
-            );
+            cJSON *params = cJSON_Parse(result.tool.params_json ? result.tool.params_json : "{}");
+            skill_result_t skill_result;
+            skill_result_init(&skill_result);
             
-            if (exec_err == ESP_OK) {
-                response = build_success_response(result.tool.tool_name, tool_output);
+            esp_err_t exec_err = skill->execute(params, &skill_result);
+            cJSON_Delete(params);
+            
+            if (exec_err == ESP_OK && skill_result.success) {
+                response = build_success_response(result.tool.tool_name, skill_result.message);
             } else {
-                response = build_error_response(tool_output);
+                response = build_error_response(skill_result.message);
             }
             
-            free(tool_output);
+            skill_result_cleanup(&skill_result);
         }
     } else {
         /* 不是工具调用，返回帮助信息 */

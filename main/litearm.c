@@ -30,7 +30,7 @@
 #include "bus/message_bus.h"
 #include "wifi/wifi_manager.h"
 #include "wifi/wifi_config.h"
-#include "tools/tool_registry.h"
+#include "skills/skill_registry.h"
 #include "tools/tool_get_time.h"
 #include "tools/tool_cron.h"
 #include "agent/agent_core.h"
