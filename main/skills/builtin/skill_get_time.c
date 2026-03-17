@@ -9,6 +9,7 @@
 #include "skill_get_time.h"
 #include "../skill_registry.h"
 #include "esp_log.h"
+#include "esp_sntp.h"
 #include <time.h>
 #include <sys/time.h>
 
@@ -16,7 +17,7 @@ static const char *TAG = "skill_time";
 
 // 执行函数
 static esp_err_t skill_get_time_execute(const cJSON *params, skill_result_t *result) {
-    (void)params; // 暂不使用参数
+    (void)params;
     
     time_t now;
     struct tm timeinfo;
@@ -25,6 +26,15 @@ static esp_err_t skill_get_time_execute(const cJSON *params, skill_result_t *res
     // 获取当前时间
     time(&now);
     localtime_r(&now, &timeinfo);
+    
+    // 检查时间是否已同步（年份大于 2020）
+    if (timeinfo.tm_year + 1900 < 2020) {
+        result->success = false;
+        snprintf(result->message, sizeof(result->message), 
+                "时间未同步，请检查网络连接");
+        ESP_LOGW(TAG, "Time not synchronized");
+        return ESP_OK;
+    }
     
     // 格式化时间字符串
     strftime(strftime_buf, sizeof(strftime_buf), "%Y-%m-%d %H:%M:%S", &timeinfo);

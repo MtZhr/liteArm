@@ -11,7 +11,6 @@
 #include "esp_log.h"
 #include <string.h>
 
-static const char *TAG = "skill_cron";
 
 // 执行函数
 static esp_err_t skill_cron_execute(const cJSON *params, skill_result_t *result) {

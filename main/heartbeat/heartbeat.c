@@ -80,7 +80,6 @@ static void load_config_from_nvs(void)
     }
 
     size_t len;
-    char buf[64];
 
     len = sizeof(s_config.channel);
     if (nvs_get_str(nvs, "channel", s_config.channel, &len) != ESP_OK) {

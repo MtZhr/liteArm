@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "skill_types.h"
+#include "../skill_types.h"
 
 #ifdef __cplusplus
 extern "C" {

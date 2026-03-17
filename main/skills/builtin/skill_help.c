@@ -8,7 +8,6 @@
 #include "../skill_registry.h"
 #include "esp_log.h"
 
-static const char *TAG = "skill_help";
 
 static esp_err_t skill_help_execute(const cJSON *params, skill_result_t *result) {
     int count = 0;

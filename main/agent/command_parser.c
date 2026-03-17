@@ -62,14 +62,6 @@ static char *trim(char *str)
     return str;
 }
 
-/**
- * @brief 检查字符串是否以指定前缀开头
- */
-static bool starts_with(const char *str, const char *prefix)
-{
-    if (!str || !prefix) return false;
-    return strncmp(str, prefix, strlen(prefix)) == 0;
-}
 
 /**
  * @brief 提取 JSON 参数
