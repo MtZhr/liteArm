@@ -1,0 +1,26 @@
+# CodeBuddy
+.codebuddy/
+
+# Build
+build/
+*.o
+*.bin
+*.elf
+*.map
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.bak
+*.swp
+*~
+
+# Secrets
+main/litearm_secrets.h
