@@ -128,7 +128,7 @@ static void cli_task(void *arg)
                 printf("  set_feishu <id> <secret>    - Set Feishu credentials\n");
                 printf("  heartbeat <cmd> [args]      - Heartbeat commands\n");
                 printf("  restart                     - Restart device\n");
-                printf("  tools                       - List registered tools\n");
+                printf("  skills                      - List registered skills\n");
                 printf("  scan                        - Scan WiFi networks\n");
             }
             else if (strcmp(line, "status") == 0) {
@@ -256,11 +256,13 @@ static void cli_task(void *arg)
                     printf("  status, start, stop, now, enable, interval\n");
                 }
             }
-            else if (strcmp(line, "tools") == 0) {
-                printf("Registered Tools (%d):\n\n", tool_registry_get_count());
-                const char *tools_json = tool_registry_get_tools_json();
-                if (tools_json) {
-                    printf("%s\n", tools_json);
+            else if (strcmp(line, "skills") == 0) {
+                int count = skill_registry_count();
+                printf("Registered Skills (%d):\n\n", count);
+                
+                const skill_def_t *skills = skill_list(&count);
+                for (int i = 0; i < count; i++) {
+                    printf("  %s: %s\n", skills[i].name, skills[i].description);
                 }
             }
             else if (strcmp(line, "restart") == 0) {

@@ -61,7 +61,7 @@ static char *build_error_response(const char *error_msg)
 /**
  * @brief 构建成功响应
  */
-static char *build_success_response(const char *tool_name, const char *result)
+static char *build_success_response(const char *skill_name, const char *result)
 {
     if (!result) return NULL;
     
@@ -96,13 +96,13 @@ esp_err_t agent_process_message(litearm_msg_t *msg)
     
     char *response = NULL;
     
-    if (result.is_tool_call && result.tool.is_valid) {
+    if (result.is_skill_call && result.skill.is_valid) {
         /* 执行技能 */
-        const skill_def_t *skill = skill_find(result.tool.tool_name);
+        const skill_def_t *skill = skill_find(result.skill.skill_name);
         if (!skill) {
             response = build_error_response("未找到技能");
         } else {
-            cJSON *params = cJSON_Parse(result.tool.params_json ? result.tool.params_json : "{}");
+            cJSON *params = cJSON_Parse(result.skill.params_json ? result.skill.params_json : "{}");
             skill_result_t skill_result;
             skill_result_init(&skill_result);
             
@@ -110,7 +110,7 @@ esp_err_t agent_process_message(litearm_msg_t *msg)
             cJSON_Delete(params);
             
             if (exec_err == ESP_OK && skill_result.success) {
-                response = build_success_response(result.tool.tool_name, skill_result.message);
+                response = build_success_response(result.skill.skill_name, skill_result.message);
             } else {
                 response = build_error_response(skill_result.message);
             }

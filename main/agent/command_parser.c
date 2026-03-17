@@ -23,11 +23,11 @@ static const char *HELP_TEXT =
     "=== liteArm 帮助 ===\n"
     "\n"
     "命令格式:\n"
-    "  !工具名              - 执行无参数工具\n"
-    "  !工具名[参数]        - 执行带参数工具\n"
-    "  /工具名 参数         - 空格分隔格式\n"
+    "  !技能名              - 执行无参数技能\n"
+    "  !技能名[参数]        - 执行带参数技能\n"
+    "  /技能名 参数         - 空格分隔格式\n"
     "\n"
-    "可用工具:\n"
+    "可用技能:\n"
     "  get_time        - 获取当前日期和时间\n"
     "  read_file       - 读取文件内容\n"
     "  write_file      - 写入文件内容\n"
@@ -130,22 +130,22 @@ static esp_err_t extract_space_params(const char *input, char *output, size_t ou
 }
 
 /**
- * @brief 解析工具调用请求
+ * @brief 解析技能调用请求
  * 支持格式:
- *   !tool_name
- *   !tool_name[params]
- *   /tool_name
- *   /tool_name params
- *   /tool_name[params]
+ *   !skill_name
+ *   !skill_name[params]
+ *   /skill_name
+ *   /skill_name params
+ *   /skill_name[params]
  */
-static esp_err_t parse_tool_call(const char *input, tool_request_t *tool_req)
+static esp_err_t parse_skill_call(const char *input, skill_request_t *skill_req)
 {
-    if (!input || !tool_req) {
+    if (!input || !skill_req) {
         return ESP_ERR_INVALID_ARG;
     }
     
-    memset(tool_req, 0, sizeof(tool_request_t));
-    tool_req->is_valid = false;
+    memset(skill_req, 0, sizeof(skill_request_t));
+    skill_req->is_valid = false;
     
     /* 首部空白处理并复制一份 */
     char *trimmed = trim((char*)input);
@@ -158,20 +158,20 @@ static esp_err_t parse_tool_call(const char *input, tool_request_t *tool_req)
         return ESP_ERR_NO_MEM;
     }
     
-    /* 判断是否为工具调用 */
+    /* 判断是否为技能调用 */
     char prefix[2] = {0};
     prefix[0] = input_copy[0];
     
     if (prefix[0] != '!' && prefix[0] != '/') {
         free(input_copy);
-        return ESP_ERR_NOT_FOUND;  /* 不是工具调用 */
+        return ESP_ERR_NOT_FOUND;  /* 不是技能调用 */
     }
     
-    /* 提取工具名 */
+    /* 提取技能名 */
     char *name_start = input_copy + 1;
     char *name_end = name_start;
     
-    /* 工具名结束位置: 空格、[、或字符串结尾 */
+    /* 技能名结束位置: 空格、[、或字符串结尾 */
     while (*name_end) {
         if (*name_end == ' ' || *name_end == '[') {
             break;
@@ -185,12 +185,12 @@ static esp_err_t parse_tool_call(const char *input, tool_request_t *tool_req)
         return ESP_ERR_INVALID_ARG;
     }
     
-    strncpy(tool_req->tool_name, name_start, name_len);
-    tool_req->tool_name[name_len] = '\0';
+    strncpy(skill_req->skill_name, name_start, name_len);
+    skill_req->skill_name[name_len] = '\0';
     
-    /* 检查工具是否存在 */
-    if (!skill_find(tool_req->tool_name)) {
-        ESP_LOGW(TAG, "Tool not found: %s", tool_req->tool_name);
+    /* 检查技能是否存在 */
+    if (!skill_find(skill_req->skill_name)) {
+        ESP_LOGW(TAG, "Skill not found: %s", skill_req->skill_name);
         free(input_copy);
         return ESP_ERR_NOT_FOUND;
     }
@@ -199,31 +199,31 @@ static esp_err_t parse_tool_call(const char *input, tool_request_t *tool_req)
     char params_buf[LITEARM_TOOL_PARAMS_MAX_LEN] = {0};
     
     if (*name_end == '[') {
-        /* JSON 格式: tool_name[params] */
+        /* JSON 格式: skill_name[params] */
         esp_err_t err = extract_json_params(name_end, params_buf, sizeof(params_buf));
         if (err == ESP_OK && params_buf[0] != '\0') {
-            tool_req->params_json = strdup(params_buf);
+            skill_req->params_json = strdup(params_buf);
         }
     } else if (*name_end == ' ') {
-        /* 空格格式: tool_name params */
+        /* 空格格式: skill_name params */
         esp_err_t err = extract_space_params(name_end, params_buf, sizeof(params_buf));
         if (err == ESP_OK && params_buf[0] != '\0') {
             /* 尝试解析为 JSON，如果失败则作为字符串 */
             if (params_buf[0] == '{') {
-                tool_req->params_json = strdup(params_buf);
+                skill_req->params_json = strdup(params_buf);
             } else {
                 /* 包装为 JSON 对象 */
                 size_t needed = strlen(params_buf) + 64;
-                tool_req->params_json = malloc(needed);
-                if (tool_req->params_json) {
-                    snprintf(tool_req->params_json, needed, 
+                skill_req->params_json = malloc(needed);
+                if (skill_req->params_json) {
+                    snprintf(skill_req->params_json, needed, 
                              "{\"raw\": \"%s\"}", params_buf);
                 }
             }
         }
     }
     
-    tool_req->is_valid = true;
+    skill_req->is_valid = true;
     free(input_copy);
     
     return ESP_OK;
@@ -241,7 +241,7 @@ esp_err_t parse_feishu_message(const feishu_message_t *msg, parse_result_t *resu
     memset(result, 0, sizeof(parse_result_t));
     
     result->msg_type = msg->type;
-    result->is_tool_call = false;
+    result->is_skill_call = false;
     
     switch (msg->type) {
         case MSG_TYPE_TEXT:
@@ -300,21 +300,21 @@ esp_err_t parse_command_text(const char *text, parse_result_t *result)
     if (strcasecmp(trimmed, "help") == 0 || 
         strcasecmp(trimmed, "!help") == 0 ||
         strcasecmp(trimmed, "/help") == 0) {
-        result->is_tool_call = true;
-        strncpy(result->tool.tool_name, "help", sizeof(result->tool.tool_name) - 1);
-        result->tool.is_valid = true;
-        result->tool.params_json = NULL;
+        result->is_skill_call = true;
+        strncpy(result->skill.skill_name, "help", sizeof(result->skill.skill_name) - 1);
+        result->skill.is_valid = true;
+        result->skill.params_json = NULL;
         return ESP_OK;
     }
     
-    /* 尝试解析为工具调用 */
-    esp_err_t err = parse_tool_call(trimmed, &result->tool);
-    if (err == ESP_OK && result->tool.is_valid) {
-        result->is_tool_call = true;
+    /* 尝试解析为技能调用 */
+    esp_err_t err = parse_skill_call(trimmed, &result->skill);
+    if (err == ESP_OK && result->skill.is_valid) {
+        result->is_skill_call = true;
         return ESP_OK;
     }
     
-    /* 不是有效的工具调用 */
+    /* 不是有效的技能调用 */
     return ESP_OK;
 }
 
@@ -330,9 +330,9 @@ void parse_result_free(parse_result_t *result)
         result->raw_text = NULL;
     }
     
-    if (result->tool.params_json) {
-        free(result->tool.params_json);
-        result->tool.params_json = NULL;
+    if (result->skill.params_json) {
+        free(result->skill.params_json);
+        result->skill.params_json = NULL;
     }
     
     memset(result, 0, sizeof(parse_result_t));

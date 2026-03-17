@@ -3,10 +3,10 @@
  * @brief Command Parser Module - 消息解析模块
  * 
  * 支持的消息格式:
- * - !tool_name
- * - !tool_name[{"param": "value"}]
- * - /tool_name param
- * - /tool_name[{"param": "value"}]
+ * - !skill_name
+ * - !skill_name[{"param": "value"}]
+ * - /skill_name param
+ * - /skill_name[{"param": "value"}]
  * - help
  *
  * @author MtZhr
@@ -34,12 +34,12 @@ typedef enum {
     MSG_TYPE_UNKNOWN     /* 未知类型 */
 } msg_type_t;
 
-/* 工具调用请求 */
+/* 技能调用请求 */
 typedef struct {
-    char tool_name[LITEARM_TOOL_NAME_MAX_LEN];    /* 工具名称 */
+    char skill_name[LITEARM_TOOL_NAME_MAX_LEN];    /* 技能名称 */
     char *params_json;                          /* 参数 JSON 字符串 */
-    bool is_valid;                              /* 是否为有效工具调用 */
-} tool_request_t;
+    bool is_valid;                              /* 是否为有效技能调用 */
+} skill_request_t;
 
 /* 飞书消息结构 */
 typedef struct {
@@ -58,8 +58,8 @@ typedef struct {
 
 /* 解析结果 */
 typedef struct {
-    bool is_tool_call;        /* 是否为工具调用 */
-    tool_request_t tool;      /* 工具请求 */
+    bool is_skill_call;        /* 是否为技能调用 */
+    skill_request_t skill;      /* 技能请求 */
     char *raw_text;          /* 原始文本 */
     msg_type_t msg_type;     /* 消息类型 */
 } parse_result_t;

@@ -131,7 +131,7 @@
  * ============================================================================ */
 #define LITEARM_NVS_WIFI                "wifi_config"
 #define LITEARM_NVS_FEISHU              "feishu_config"
-#define LITEARM_NVS_TOOLS               "tools_config"
+#define LITEARM_NVS_SKILLS               "skills_config"
 
 #define LITEARM_NVS_KEY_SSID            "ssid"
 #define LITEARM_NVS_KEY_PASS            "password"

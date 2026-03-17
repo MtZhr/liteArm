@@ -10,7 +10,7 @@
 #include "litearm_config.h"
 #include "bus/message_bus.h"
 #include "wifi/wifi_manager.h"
-#include "tools/tool_registry.h"
+#include "skills/skill_registry.h"
 
 #include <string.h>
 #include <time.h>
