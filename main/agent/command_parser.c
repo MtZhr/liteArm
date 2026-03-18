@@ -20,27 +20,11 @@ static const char *TAG = "parser";
 
 /* 静态帮助文本 */
 static const char *HELP_TEXT = 
-    "=== liteArm 帮助 ===\n"
-    "\n"
-    "命令格式:\n"
-    "  !技能名              - 执行无参数技能\n"
-    "  !技能名[参数]        - 执行带参数技能\n"
-    "  /技能名 参数         - 空格分隔格式\n"
-    "\n"
-    "可用技能:\n"
-    "  get_time        - 获取当前日期和时间\n"
-    "  read_file       - 读取文件内容\n"
-    "  write_file      - 写入文件内容\n"
-    "  edit_file       - 编辑文件内容\n"
-    "  list_dir        - 列出目录文件\n"
-    "  cron_add        - 添加定时任务\n"
-    "  cron_list       - 列出定时任务\n"
-    "  cron_remove     - 删除定时任务\n"
-    "\n"
-    "示例:\n"
-    "  !get_time\n"
-    "  !read_file[{\"path\": \"/spiffs/config.txt\"}]\n"
-    "  !write_file[{\"path\": \"/spiffs/test.txt\", \"content\": \"hello\"}]\n";
+    TXT_HELP_HEADER
+    TXT_HELP_FORMAT
+    TXT_HELP_AVAILABLE
+    TXT_HELP_EXAMPLES;
+
 
 /**
  * @brief 字符串首尾空白处理
@@ -241,17 +225,17 @@ esp_err_t parse_feishu_message(const feishu_message_t *msg, parse_result_t *resu
             
         case MSG_TYPE_IMAGE:
             /* 图片消息 */
-            result->raw_text = strdup("[图片消息]");
+            result->raw_text = strdup("TXT_MSG_TYPE_IMAGE");
             break;
             
         case MSG_TYPE_VOICE:
             /* 语音消息 */
-            result->raw_text = strdup("[语音消息]");
+            result->raw_text = strdup("TXT_MSG_TYPE_VOICE");
             break;
             
         case MSG_TYPE_FILE:
             /* 文件消息 */
-            result->raw_text = strdup("[文件消息]");
+            result->raw_text = strdup("TXT_MSG_TYPE_FILE");
             break;
             
         case MSG_TYPE_CARD:
@@ -259,11 +243,11 @@ esp_err_t parse_feishu_message(const feishu_message_t *msg, parse_result_t *resu
             if (msg->content.text) {
                 return parse_command_text(msg->content.text, result);
             }
-            result->raw_text = strdup("[卡片消息]");
+            result->raw_text = strdup("TXT_MSG_TYPE_CARD");
             break;
             
         default:
-            result->raw_text = strdup("[未知消息类型]");
+            result->raw_text = strdup("TXT_MSG_TYPE_UNKNOWN");
             break;
     }
     

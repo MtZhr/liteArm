@@ -31,7 +31,7 @@ esp_err_t skill_help_register(void) {
     
     skill_def_t skill = {
         .name = "help",
-        .description = "显示所有可用技能",
+        .description = TXT_SKILL_HELP,
         .category = "system",
         .execute = skill_help_execute,
         .aliases = aliases,

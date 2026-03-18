@@ -35,7 +35,7 @@ esp_err_t skill_cron_register(void) {
     
     skill_def_t skill = {
         .name = "cron",
-        .description = "定时任务管理",
+        .description = TXT_SKILL_CRON,
         .category = "system",
         .params = NULL,
         .param_count = 0,

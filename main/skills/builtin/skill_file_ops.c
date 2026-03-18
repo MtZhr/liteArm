@@ -97,7 +97,7 @@ esp_err_t skill_file_ops_register(void) {
 
     skill_def_t skill = {
         .name = "file_ops",
-        .description = "文件操作：读取/写入文件",
+        .description = TXT_SKILL_FILE_OPS,
         .category = "file",
         .params = params,
         .param_count = 3,

@@ -61,7 +61,7 @@ esp_err_t skill_get_time_register(void) {
     
     skill_def_t skill = {
         .name = "get_time",
-        .description = "获取当前系统时间",
+        .description = TXT_SKILL_GET_TIME,
         .category = "system",
         .params = NULL,
         .param_count = 0,

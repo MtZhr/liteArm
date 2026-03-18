@@ -45,7 +45,7 @@ esp_err_t skill_system_register(void) {
     
     skill_def_t skill = {
         .name = "get_status",
-        .description = "获取系统状态信息",
+        .description = TXT_SKILL_SYSTEM,
         .category = "system",
         .params = NULL,
         .param_count = 0,
